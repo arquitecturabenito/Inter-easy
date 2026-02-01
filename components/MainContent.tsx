@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ContentStrings, Language } from '../types';
 import Logo from './Logo';
-import { Phone, Mail, MapPin, ArrowDownRight, MoveRight } from 'lucide-react';
+import { Phone, Mail, MapPin, ArrowDownRight, MoveRight, Contact } from 'lucide-react';
 
 interface MainContentProps {
   t: ContentStrings;
@@ -20,6 +20,28 @@ const MainContent: React.FC<MainContentProps> = ({ t, currentLang, onReset, onOp
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const handleSaveContact = () => {
+    const vCardData = [
+        'BEGIN:VCARD',
+        'VERSION:3.0',
+        'FN:InterEASY Green Trade',
+        'ORG:InterEASY',
+        `TEL;TYPE=WORK,VOICE:${t.phone.replace(/\s/g, '')}`,
+        `EMAIL;TYPE=WORK:${t.email}`,
+        'ADR;TYPE=WORK:;;San Pedro del Pinatar;Murcia;;;España',
+        'END:VCARD'
+    ].join('\n');
+
+    const blob = new Blob([vCardData], { type: 'text/vcard;charset=utf-8' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'InterEASY.vcf');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   return (
     <div className="min-h-screen bg-cream text-deep-green selection:bg-soft-yellow selection:text-deep-green overflow-x-hidden flex flex-col">
@@ -85,6 +107,16 @@ const MainContent: React.FC<MainContentProps> = ({ t, currentLang, onReset, onOp
                     </div>
                     <span className="font-sans font-bold text-lg md:text-xl border-b-2 border-deep-green/10 group-hover/link:border-deep-green transition-all">{t.phone}</span>
                   </a>
+                  
+                  {/* Save Contact Button */}
+                  <button 
+                    onClick={handleSaveContact}
+                    className="w-full mt-4 flex items-center justify-center gap-3 bg-white hover:bg-deep-green hover:text-white text-deep-green py-3 px-6 rounded-full transition-all duration-300 shadow-sm border border-deep-green/10"
+                  >
+                    <Contact size={20} />
+                    <span className="font-sans font-bold uppercase tracking-wider text-sm">{t.saveContact}</span>
+                  </button>
+
                 </div>
               </div>
 

@@ -17,6 +17,7 @@ export interface ContentStrings {
   productsHeader: string;
   viewProducts: string;
   backToHome: string;
+  saveContact: string;
   sectionFresh: string;
   sectionFrozen: string;
   address: string;
