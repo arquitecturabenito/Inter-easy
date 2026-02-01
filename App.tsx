@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { TRANSLATIONS } from './constants';
 import { Language } from './types';
 import WelcomeScreen from './components/WelcomeScreen';
