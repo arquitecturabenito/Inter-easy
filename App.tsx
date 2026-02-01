@@ -3,25 +3,36 @@ import { TRANSLATIONS } from './constants';
 import { Language } from './types';
 import WelcomeScreen from './components/WelcomeScreen';
 import MainContent from './components/MainContent';
+import ProductPage from './components/ProductPage';
+
+type ViewState = 'welcome' | 'home' | 'products';
 
 function App() {
-  const [hasEntered, setHasEntered] = useState(false);
+  const [view, setView] = useState<ViewState>('welcome');
   const [selectedLanguage, setSelectedLanguage] = useState<Language>(Language.ES);
 
   const t = TRANSLATIONS[selectedLanguage];
 
   const handleEnter = () => {
-    setHasEntered(true);
+    setView('home');
     window.scrollTo(0, 0);
   };
 
   const handleReset = () => {
-    setHasEntered(false);
+    setView('welcome');
+  };
+
+  const handleOpenProducts = () => {
+    setView('products');
+  };
+
+  const handleBackToHome = () => {
+    setView('home');
   };
 
   return (
     <div className="antialiased">
-      {!hasEntered && (
+      {view === 'welcome' && (
         <WelcomeScreen 
           selectedLanguage={selectedLanguage}
           onLanguageChange={setSelectedLanguage}
@@ -30,11 +41,19 @@ function App() {
         />
       )}
       
-      {hasEntered && (
+      {view === 'home' && (
         <MainContent 
           t={t}
           currentLang={selectedLanguage}
           onReset={handleReset}
+          onOpenProducts={handleOpenProducts}
+        />
+      )}
+
+      {view === 'products' && (
+        <ProductPage 
+          t={t}
+          onBack={handleBackToHome}
         />
       )}
     </div>
