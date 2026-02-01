@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Language, ContentStrings } from '../types';
+import { TRANSLATIONS } from '../constants';
 import Logo from './Logo';
 import { ChevronDown, Globe, MoveRight } from 'lucide-react';
 
@@ -16,6 +17,19 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
   onEnter,
   t,
 }) => {
+  const [displayLangIndex, setDisplayLangIndex] = useState(0);
+  const languages = Object.values(Language);
+  
+  // Cycle through languages for the "Welcome" text
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setDisplayLangIndex((prev) => (prev + 1) % languages.length);
+    }, 2500);
+    return () => clearInterval(interval);
+  }, [languages.length]);
+
+  const displayT = TRANSLATIONS[languages[displayLangIndex]];
+
   return (
     <div className="fixed inset-0 z-50 bg-cream text-deep-green flex flex-col items-center justify-center p-6 md:p-12 transition-all duration-700 overflow-hidden">
       
@@ -29,10 +43,12 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
           <Logo className="scale-125" subtitle={t.tagline} />
         </div>
 
-        <h1 className="font-serif text-5xl md:text-7xl text-center leading-[1.1] animate-[fadeIn_1s_ease-out_0.3s_forwards] opacity-0 text-deep-green">
-          {t.welcome} <span className="italic text-fresh-green">{t.welcomeConnector}</span><br/>
-          <span className="text-electric-blue">{t.tagline}</span>
-        </h1>
+        <div className="h-32 flex items-center justify-center">
+            <h1 key={languages[displayLangIndex]} className="font-serif text-5xl md:text-7xl text-center leading-[1.1] animate-[fadeInOut_2.5s_infinite] text-deep-green">
+            {displayT.welcome} <span className="italic text-fresh-green">{displayT.welcomeConnector}</span><br/>
+            <span className="text-electric-blue">{t.tagline}</span>
+            </h1>
+        </div>
 
         <div className="w-full max-w-sm space-y-4 animate-[slideUp_0.8s_ease-out_0.6s_forwards] opacity-0">
             {/* Playful Language Selector */}
@@ -74,6 +90,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
 
       <style>{`
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeInOut { 0% { opacity: 0; transform: translateY(10px); } 15% { opacity: 1; transform: translateY(0); } 85% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-10px); } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes slideDown { from { opacity: 0; transform: translateY(-40px); } to { opacity: 1; transform: translateY(0); } }
       `}</style>

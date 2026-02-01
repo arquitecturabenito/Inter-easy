@@ -15,6 +15,7 @@ export interface ContentStrings {
   enter: string;
   contactHeader: string;
   productsHeader: string;
+  viewProducts: string;
   sectionFresh: string;
   sectionFrozen: string;
   address: string;
@@ -25,6 +26,7 @@ export interface ContentStrings {
   hq: string;
   getInTouch: string;
   rightsReserved: string;
+  moreVariety: string;
   productNames: {
     redPepper: string;
     greenPepper: string;

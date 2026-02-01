@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ContentStrings, Language } from '../types';
 import Logo from './Logo';
-import { Phone, Mail, MapPin, ArrowDownRight, Snowflake, Sun } from 'lucide-react';
+import { Phone, Mail, MapPin, ArrowDownRight, Snowflake, Sun, ChevronDown } from 'lucide-react';
 
 interface MainContentProps {
   t: ContentStrings;
@@ -22,7 +22,7 @@ const getIcon = (key: string) => {
     case 'potato': return '🥔';
     case 'tomato': return '🍅';
     case 'broccoli': return '🥦';
-    case 'cauliflower': return '🥬'; // Approximation
+    case 'cauliflower': return '🥬';
     case 'cucumber': return '🥒';
     case 'celery': return '🌿';
     case 'sweetPotato': return '🍠';
@@ -38,8 +38,15 @@ const getIcon = (key: string) => {
   }
 };
 
+// Helper for deterministic rotation
+const getRotation = (index: number) => {
+  const rotations = ['rotate-1', '-rotate-2', 'rotate-3', '-rotate-1', 'rotate-2', '-rotate-3'];
+  return rotations[index % rotations.length];
+};
+
 const MainContent: React.FC<MainContentProps> = ({ t, currentLang, onReset }) => {
   const [scrolled, setScrolled] = useState(false);
+  const [showProducts, setShowProducts] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -48,6 +55,15 @@ const MainContent: React.FC<MainContentProps> = ({ t, currentLang, onReset }) =>
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const toggleProducts = () => {
+    setShowProducts(!showProducts);
+    if (!showProducts) {
+      setTimeout(() => {
+        document.getElementById('products-section')?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    }
+  };
 
   const frozenKeys: (keyof ContentStrings['productNames'])[] = [
     'redPepper', 'greenPepper', 'yellowPepper', 'orangePepper',
@@ -64,7 +80,7 @@ const MainContent: React.FC<MainContentProps> = ({ t, currentLang, onReset }) =>
   ];
 
   return (
-    <div className="min-h-screen bg-cream text-deep-green selection:bg-soft-yellow selection:text-deep-green overflow-x-hidden">
+    <div className="min-h-screen bg-cream text-deep-green selection:bg-soft-yellow selection:text-deep-green overflow-x-hidden pb-12">
       
       {/* Organic Navbar */}
       <header className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 ${scrolled ? 'py-2' : 'py-6'}`}>
@@ -82,7 +98,7 @@ const MainContent: React.FC<MainContentProps> = ({ t, currentLang, onReset }) =>
       </header>
 
       {/* Playful Hero Section */}
-      <section className="relative pt-32 pb-16 md:pt-48 md:pb-24 px-6 overflow-hidden">
+      <section className="relative pt-32 pb-16 md:pt-48 md:pb-24 px-6 overflow-hidden min-h-[90vh] flex flex-col justify-center">
         {/* Abstract Background Shapes */}
         <div className="absolute top-0 right-0 w-[40vw] h-[40vw] bg-fresh-green/10 rounded-full blur-[100px] translate-x-1/4 -translate-y-1/4"></div>
         <div className="absolute bottom-0 left-0 w-[30vw] h-[30vw] bg-electric-blue/10 rounded-full blur-[80px] -translate-x-1/4 translate-y-1/4"></div>
@@ -98,9 +114,18 @@ const MainContent: React.FC<MainContentProps> = ({ t, currentLang, onReset }) =>
                 <br />
                 <span className="text-electric-blue">{t.tagline}</span>
               </h1>
-              <p className="font-sans text-xl md:text-2xl text-deep-green/70 max-w-lg leading-relaxed mb-8">
+              <p className="font-sans text-xl md:text-2xl text-deep-green/70 max-w-lg leading-relaxed mb-12">
                 {t.heroDescription}
               </p>
+
+              {/* View Products Toggle Button */}
+              <button 
+                onClick={toggleProducts}
+                className="group flex items-center gap-3 bg-electric-blue text-white px-8 py-4 rounded-full font-serif text-xl hover:bg-deep-green transition-all shadow-lg hover:shadow-xl hover:-translate-y-1"
+              >
+                {t.viewProducts}
+                <ChevronDown className={`transition-transform duration-300 ${showProducts ? 'rotate-180' : ''}`} />
+              </button>
             </div>
             
             {/* Floating Contact Card Style */}
@@ -130,71 +155,80 @@ const MainContent: React.FC<MainContentProps> = ({ t, currentLang, onReset }) =>
         </div>
       </section>
 
-      {/* Marquee/Separator */}
-      <div className="w-full bg-electric-blue py-3 overflow-hidden whitespace-nowrap -rotate-1 origin-left scale-105 border-y-4 border-white shadow-sm">
-        <div className="inline-block animate-[marquee_20s_linear_infinite]">
-          {[...Array(10)].map((_, i) => (
-             <span key={i} className="text-white font-serif text-2xl mx-8">
-               • {t.tagline.toUpperCase()} • {t.freshnessGuaranteed.toUpperCase()}
-             </span>
-          ))}
+      {/* Expandable "Messy Sticker" Product Section */}
+      <div 
+        id="products-section"
+        className={`transition-all duration-1000 ease-in-out overflow-hidden ${showProducts ? 'max-h-[3000px] opacity-100' : 'max-h-0 opacity-0'}`}
+      >
+        <div className="w-full bg-deep-green/5 py-3 overflow-hidden whitespace-nowrap rotate-1 origin-right scale-105 border-y-4 border-white shadow-sm mb-12">
+            <div className="inline-block animate-[marquee_20s_linear_infinite]">
+            {[...Array(10)].map((_, i) => (
+                <span key={i} className="text-deep-green/40 font-serif text-2xl mx-8">
+                • {t.productsHeader.toUpperCase()} • {t.tagline.toUpperCase()}
+                </span>
+            ))}
+            </div>
         </div>
+
+        <section className="py-12 px-6">
+            <div className="container mx-auto max-w-6xl">
+            
+            <div className="flex flex-col md:flex-row gap-16">
+                
+                {/* Frozen Stickers */}
+                <div className="flex-1 relative">
+                    <div className="sticky top-24 z-10 mb-8 md:mb-0 text-center md:text-left">
+                        <div className="inline-flex items-center gap-2 bg-electric-blue text-white px-6 py-2 rounded-full shadow-md rotate-[-2deg]">
+                            <Snowflake size={20} />
+                            <h3 className="font-serif text-2xl">{t.sectionFrozen}</h3>
+                        </div>
+                    </div>
+                    <div className="flex flex-wrap gap-4 p-8 justify-center md:justify-start">
+                        {frozenKeys.map((key, i) => (
+                        <div 
+                            key={`frozen-${String(key)}`} 
+                            className={`transform ${getRotation(i)} transition-all duration-300 hover:scale-110 hover:z-20 hover:rotate-0 cursor-default bg-white px-5 py-3 shadow-lg rounded-sm border-2 border-white ring-1 ring-black/5 flex flex-col items-center justify-center min-w-[140px] max-w-[180px] text-center`}
+                        >
+                            <span className="text-4xl mb-2 filter drop-shadow-sm">{getIcon(String(key))}</span>
+                            <span className="font-sans font-bold text-xs text-deep-green uppercase tracking-tight leading-tight">{t.productNames[key]}</span>
+                        </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Fresh Stickers */}
+                <div className="flex-1 relative">
+                    <div className="sticky top-24 z-10 mb-8 md:mb-0 text-center md:text-right">
+                         <div className="inline-flex items-center gap-2 bg-fresh-green text-white px-6 py-2 rounded-full shadow-md rotate-[2deg]">
+                            <Sun size={20} />
+                            <h3 className="font-serif text-2xl">{t.sectionFresh}</h3>
+                        </div>
+                    </div>
+                    <div className="flex flex-wrap gap-4 p-8 justify-center md:justify-end">
+                        {freshKeys.map((key, i) => (
+                        <div 
+                            key={`fresh-${String(key)}`} 
+                            className={`transform ${getRotation(i + 3)} transition-all duration-300 hover:scale-110 hover:z-20 hover:rotate-0 cursor-default bg-white px-5 py-3 shadow-lg rounded-sm border-2 border-white ring-1 ring-black/5 flex flex-col items-center justify-center min-w-[140px] max-w-[180px] text-center`}
+                        >
+                            <span className="text-4xl mb-2 filter drop-shadow-sm">{getIcon(String(key))}</span>
+                            <span className="font-sans font-bold text-xs text-deep-green uppercase tracking-tight leading-tight">{t.productNames[key]}</span>
+                        </div>
+                        ))}
+                    </div>
+                </div>
+
+            </div>
+
+            <div className="text-center mt-20 mb-8">
+                 <p className="font-serif text-3xl md:text-4xl text-electric-blue animate-pulse">{t.moreVariety}</p>
+            </div>
+
+            </div>
+        </section>
       </div>
 
-      {/* Compact Product List */}
-      <section className="py-20 px-6">
-        <div className="container mx-auto max-w-6xl">
-          <div className="text-center mb-12">
-            <h2 className="font-serif text-4xl md:text-6xl text-deep-green mb-4">
-              {t.productsHeader}
-            </h2>
-            <div className="w-16 h-1.5 bg-fresh-green mx-auto rounded-full"></div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            
-            {/* Frozen Section */}
-            <div className="bg-white/40 backdrop-blur-sm rounded-[2.5rem] p-8 border border-deep-green/5 shadow-sm">
-              <div className="flex items-center gap-3 mb-8">
-                <div className="bg-electric-blue/10 p-3 rounded-full text-electric-blue">
-                  <Snowflake size={24} />
-                </div>
-                <h3 className="font-serif text-3xl text-deep-green">{t.sectionFrozen}</h3>
-              </div>
-              <div className="flex flex-wrap gap-3">
-                {frozenKeys.map((key) => (
-                  <div key={`frozen-${String(key)}`} className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm border border-deep-green/5 hover:scale-105 transition-transform cursor-default">
-                    <span className="text-xl leading-none filter drop-shadow-sm">{getIcon(String(key))}</span>
-                    <span className="font-sans font-bold text-sm text-deep-green/90 uppercase tracking-wide">{t.productNames[key]}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Fresh Section */}
-            <div className="bg-white/40 backdrop-blur-sm rounded-[2.5rem] p-8 border border-deep-green/5 shadow-sm">
-              <div className="flex items-center gap-3 mb-8">
-                <div className="bg-fresh-green/10 p-3 rounded-full text-fresh-green">
-                  <Sun size={24} />
-                </div>
-                <h3 className="font-serif text-3xl text-deep-green">{t.sectionFresh}</h3>
-              </div>
-              <div className="flex flex-wrap gap-3">
-                {freshKeys.map((key) => (
-                  <div key={`fresh-${String(key)}`} className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm border border-deep-green/5 hover:scale-105 transition-transform cursor-default">
-                    <span className="text-xl leading-none filter drop-shadow-sm">{getIcon(String(key))}</span>
-                    <span className="font-sans font-bold text-sm text-deep-green/90 uppercase tracking-wide">{t.productNames[key]}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </section>
-
       {/* Footer */}
-      <footer className="bg-deep-green text-cream rounded-t-[3rem] pt-20 pb-10 px-6 mt-6 mx-2 md:mx-6 mb-6">
+      <footer className="bg-deep-green text-cream rounded-t-[3rem] pt-20 pb-10 px-6 mt-6 mx-2 md:mx-6">
         <div className="container mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-start gap-12 mb-16">
             <div className="md:w-1/2">
@@ -209,7 +243,7 @@ const MainContent: React.FC<MainContentProps> = ({ t, currentLang, onReset }) =>
                     <MapPin size={24} />
                     <span className="font-sans font-bold uppercase tracking-wider text-sm">{t.hq}</span>
                  </div>
-                 <p className="font-serif text-2xl">{t.address}</p>
+                 <p className="font-serif text-2xl leading-tight">{t.address}</p>
                </div>
                
                <div className="bg-white/10 p-6 rounded-2xl backdrop-blur-sm hover:bg-white/20 transition-colors cursor-pointer">
