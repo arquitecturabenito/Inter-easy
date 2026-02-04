@@ -46,7 +46,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
         <div className="h-32 flex items-center justify-center">
             <h1 key={languages[displayLangIndex]} className="font-serif text-5xl md:text-7xl text-center leading-[1.1] animate-[fadeInOut_2.5s_infinite] text-deep-green">
             {displayT.welcome} <span className="italic text-fresh-green">{displayT.welcomeConnector}</span><br/>
-            <span className="text-electric-blue">{t.tagline}</span>
+            <span className="text-electric-blue">Inter Easy</span>
             </h1>
         </div>
 

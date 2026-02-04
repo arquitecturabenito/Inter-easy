@@ -1,47 +1,13 @@
 import React, { useEffect } from 'react';
 import { ContentStrings } from '../types';
 import Logo from './Logo';
-import { Snowflake, Sun, ArrowLeft } from 'lucide-react';
+import VegetableIcon from './VegetableIcon';
+import { Snowflake, Sun, ArrowLeft, Info } from 'lucide-react';
 
 interface ProductPageProps {
   t: ContentStrings;
   onBack: () => void;
 }
-
-// Icon mapping helper
-const getIcon = (key: string) => {
-  switch (key) {
-    case 'redPepper': return '🔴 🫑';
-    case 'greenPepper': return '🟢 🫑';
-    case 'yellowPepper': return '🟡 🫑';
-    case 'orangePepper': return '🟠 🫑';
-    case 'eggplant': return '🍆';
-    case 'zucchini': return '🥒';
-    case 'onion': return '🧅';
-    case 'potato': return '🥔';
-    case 'tomato': return '🍅';
-    case 'broccoli': return '🥦';
-    case 'cauliflower': return '🥬';
-    case 'cucumber': return '🥒';
-    case 'celery': return '🌿';
-    case 'sweetPotato': return '🍠';
-    case 'pumpkin': return '🎃';
-    case 'artichoke': return '🥬';
-    case 'leek': return '🌿';
-    case 'fennel': return '🌿';
-    case 'carrot': return '🥕';
-    case 'romanesco': return '🥦';
-    case 'chard': return '🥬';
-    case 'lettuce': return '🥬';
-    default: return '🥗';
-  }
-};
-
-// Helper for deterministic rotation
-const getRotation = (index: number) => {
-  const rotations = ['rotate-1', '-rotate-2', 'rotate-3', '-rotate-1', 'rotate-2', '-rotate-3', 'rotate-6', '-rotate-6'];
-  return rotations[index % rotations.length];
-};
 
 const ProductPage: React.FC<ProductPageProps> = ({ t, onBack }) => {
   
@@ -49,95 +15,116 @@ const ProductPage: React.FC<ProductPageProps> = ({ t, onBack }) => {
     window.scrollTo(0, 0);
   }, []);
 
+  const freshKeys: (keyof ContentStrings['productNames'])[] = [
+    'tomato', 'cucumber', 'redPepper', 'greenPepper', 'yellowPepper', 'orangePepper',
+    'zucchini', 'eggplant', 'carrot', 'daikon', 'beetroot', 'parsnip',
+    'sweetPotato', 'potato', 'broccoli', 'cauliflower', 'artichoke', 'leek',
+    'kale', 'cabbages', 'spinach', 'pumpkin', 'corn', 'celery'
+  ];
+
   const frozenKeys: (keyof ContentStrings['productNames'])[] = [
     'redPepper', 'greenPepper', 'yellowPepper', 'orangePepper',
     'eggplant', 'zucchini', 'onion', 'potato', 'tomato'
   ];
 
-  const freshKeys: (keyof ContentStrings['productNames'])[] = [
-    'redPepper', 'greenPepper', 'yellowPepper', 'orangePepper',
-    'broccoli', 'cauliflower', 'cucumber', 'zucchini',
-    'eggplant', 'celery', 'sweetPotato', 'pumpkin',
-    'potato', 'artichoke', 'leek', 'fennel',
-    'onion', 'tomato', 'carrot', 'romanesco',
-    'chard', 'lettuce'
-  ];
-
   return (
-    <div className="min-h-screen bg-cream text-deep-green animate-[fadeIn_0.5s_ease-out]">
+    <div className="min-h-screen bg-[#FDFBF7] text-deep-green animate-[fadeIn_0.5s_ease-out]">
       
       {/* Sticky Header */}
       <header className="fixed top-0 left-0 right-0 z-50 py-4 px-4 md:px-8">
-        <div className="bg-white/90 backdrop-blur-md rounded-full shadow-lg border border-deep-green/5 px-4 py-2 md:px-6 md:py-3 flex justify-between items-center">
+        <div className="bg-white/95 backdrop-blur-md rounded-full shadow-md border border-deep-green/5 px-4 py-2 md:px-6 md:py-3 flex justify-between items-center max-w-7xl mx-auto">
             <button 
                 onClick={onBack}
-                className="flex items-center gap-2 bg-deep-green text-cream px-4 py-2 rounded-full hover:bg-electric-blue transition-colors text-sm md:text-base font-sans font-bold uppercase tracking-wider"
+                className="flex items-center gap-2 bg-deep-green text-cream px-4 py-2 rounded-full hover:bg-electric-blue transition-all active:scale-95 text-xs md:text-sm font-sans font-bold uppercase tracking-wider"
             >
-                <ArrowLeft size={18} />
-                <span className="hidden md:inline">{t.backToHome}</span>
+                <ArrowLeft size={16} />
+                <span>{t.backToHome}</span>
             </button>
             <Logo className="scale-75 md:scale-90 origin-right" subtitle={t.tagline} />
         </div>
       </header>
 
-      <div className="pt-32 pb-20 px-4 md:px-8">
-        {/* Marquee Header */}
-        <div className="mb-12 overflow-hidden">
-             <h2 className="font-serif text-5xl md:text-8xl text-center text-electric-blue mb-4">
-                 {t.productsHeader}
-             </h2>
-             <div className="w-24 h-2 bg-fresh-green mx-auto rounded-full"></div>
-        </div>
-
-        <div className="container mx-auto max-w-7xl space-y-24">
+      <div className="pt-28 pb-20 px-4 md:px-8">
+        <div className="container mx-auto max-w-7xl">
             
-            {/* Frozen Section */}
-            <div className="relative">
-                <div className="flex justify-center mb-12">
-                    <div className="bg-electric-blue text-white px-8 py-3 rounded-full shadow-lg -rotate-2 flex items-center gap-3">
-                         <Snowflake />
-                         <span className="font-serif text-2xl md:text-3xl">{t.sectionFrozen}</span>
+            {/* Header Area */}
+            <div className="mb-16 text-center">
+                 <h2 className="font-serif text-4xl md:text-7xl text-deep-green mb-4">
+                     {t.productsHeader}
+                 </h2>
+                 <p className="font-sans text-deep-green/60 text-sm md:text-base max-w-2xl mx-auto border-t border-deep-green/10 pt-4">
+                    {t.availabilityNotice}
+                 </p>
+            </div>
+
+            {/* Fresh Section Grid */}
+            <div className="mb-24">
+                <div className="flex items-center gap-4 mb-10 border-b-2 border-fresh-green/20 pb-4">
+                    <div className="bg-fresh-green text-white p-2 rounded-lg shadow-sm">
+                        <Sun size={24} />
                     </div>
+                    <h3 className="font-serif text-3xl md:text-4xl text-fresh-green">{t.sectionFresh}</h3>
                 </div>
-                
-                <div className="flex flex-wrap justify-center gap-6 md:gap-8 px-2">
-                    {frozenKeys.map((key, i) => (
+
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6 md:gap-8">
+                    {freshKeys.map((key) => (
                         <div 
-                            key={`frozen-${String(key)}`} 
-                            className={`transform ${getRotation(i)} bg-white p-4 shadow-md rounded-xl border border-deep-green/5 w-[45%] md:w-[200px] aspect-square flex flex-col items-center justify-center text-center transition-transform hover:scale-110 hover:z-10 hover:rotate-0 duration-300`}
+                            key={`fresh-${key}`} 
+                            className="bg-white p-6 rounded-2xl border border-gray-100 shadow-[0_4px_12px_rgba(0,0,0,0.03)] flex flex-col items-center group transition-all hover:shadow-xl hover:-translate-y-1"
                         >
-                            <span className="text-4xl md:text-6xl mb-3">{getIcon(String(key))}</span>
-                            <span className="font-sans font-bold text-sm text-deep-green uppercase leading-tight">{t.productNames[key]}</span>
+                            <div className="w-16 h-16 md:w-20 md:h-20 mb-4 group-hover:scale-110 transition-transform">
+                                <VegetableIcon name={key} />
+                            </div>
+                            <span className="font-sans font-extrabold text-xs md:text-sm text-deep-green uppercase tracking-wide text-center min-h-[2.5rem] flex items-center justify-center">
+                                {t.productNames[key]}
+                            </span>
                         </div>
                     ))}
                 </div>
             </div>
 
-            {/* Fresh Section */}
-            <div className="relative">
-                 <div className="flex justify-center mb-12">
-                    <div className="bg-fresh-green text-white px-8 py-3 rounded-full shadow-lg rotate-2 flex items-center gap-3">
-                         <Sun />
-                         <span className="font-serif text-2xl md:text-3xl">{t.sectionFresh}</span>
+            {/* Frozen Section Grid */}
+            <div className="mb-24">
+                <div className="flex items-center gap-4 mb-10 border-b-2 border-electric-blue/20 pb-4">
+                    <div className="bg-electric-blue text-white p-2 rounded-lg shadow-sm">
+                        <Snowflake size={24} />
                     </div>
+                    <h3 className="font-serif text-3xl md:text-4xl text-electric-blue">{t.sectionFrozen}</h3>
                 </div>
 
-                <div className="flex flex-wrap justify-center gap-6 md:gap-8 px-2">
-                    {freshKeys.map((key, i) => (
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6 md:gap-8 opacity-95">
+                    {frozenKeys.map((key) => (
                         <div 
-                            key={`fresh-${String(key)}`} 
-                            className={`transform ${getRotation(i + 4)} bg-white p-4 shadow-md rounded-xl border border-deep-green/5 w-[45%] md:w-[200px] aspect-square flex flex-col items-center justify-center text-center transition-transform hover:scale-110 hover:z-10 hover:rotate-0 duration-300`}
+                            key={`frozen-${key}`} 
+                            className="bg-white p-6 rounded-2xl border border-gray-100 shadow-[0_4px_12px_rgba(0,0,0,0.03)] flex flex-col items-center hover:shadow-md transition-shadow"
                         >
-                            <span className="text-4xl md:text-6xl mb-3">{getIcon(String(key))}</span>
-                            <span className="font-sans font-bold text-sm text-deep-green uppercase leading-tight">{t.productNames[key]}</span>
+                            <div className="w-16 h-16 md:w-20 md:h-20 mb-4 grayscale-[0.2]">
+                                <VegetableIcon name={key} />
+                            </div>
+                            <span className="font-sans font-bold text-xs md:text-sm text-deep-green uppercase tracking-wide text-center mb-1">
+                                {t.productNames[key]}
+                            </span>
+                            <span className="font-sans italic text-[10px] text-electric-blue uppercase font-bold tracking-widest">Frozen</span>
                         </div>
                     ))}
                 </div>
             </div>
 
-            <div className="bg-soft-yellow rounded-[2rem] p-8 md:p-12 text-center transform rotate-1 mt-12 mx-auto max-w-2xl border-4 border-white shadow-xl">
-                 <p className="font-serif text-3xl md:text-5xl text-deep-green mb-4 leading-tight">{t.moreVariety}</p>
-                 <button onClick={onBack} className="mt-4 text-electric-blue font-bold border-b-2 border-electric-blue hover:text-deep-green hover:border-deep-green transition-all">
+            {/* Info Banner */}
+            <div className="bg-soft-yellow/20 rounded-3xl p-8 md:p-12 border-2 border-dashed border-soft-yellow flex flex-col md:flex-row items-center justify-between gap-8 max-w-4xl mx-auto mb-12">
+                 <div className="flex-1 space-y-4">
+                    <div className="flex items-center gap-3 text-deep-green">
+                        <Info size={32} />
+                        <h4 className="font-serif text-2xl md:text-3xl">{t.moreVariety}</h4>
+                    </div>
+                    <p className="font-sans text-deep-green/70">
+                        {t.availabilityNotice}
+                    </p>
+                 </div>
+                 <button 
+                    onClick={onBack}
+                    className="shrink-0 bg-deep-green text-white px-8 py-4 rounded-full font-sans font-bold uppercase tracking-widest shadow-lg hover:bg-electric-blue transition-colors active:scale-95"
+                 >
                      {t.contactHeader}
                  </button>
             </div>

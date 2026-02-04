@@ -29,6 +29,7 @@ export interface ContentStrings {
   getInTouch: string;
   rightsReserved: string;
   moreVariety: string;
+  availabilityNotice: string;
   productNames: {
     redPepper: string;
     greenPepper: string;
@@ -52,6 +53,13 @@ export interface ContentStrings {
     romanesco: string;
     chard: string;
     lettuce: string;
+    beetroot: string;
+    kale: string;
+    cabbages: string;
+    spinach: string;
+    corn: string;
+    daikon: string;
+    parsnip: string;
   };
 }
 

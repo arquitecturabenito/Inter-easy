@@ -98,7 +98,7 @@ const MainContent: React.FC<MainContentProps> = ({ t, currentLang, onReset, onOp
               <div className="relative">
                 {/* Compacted title for mobile */}
                 <h1 className="font-serif text-5xl md:text-8xl lg:text-8xl leading-[0.9] text-deep-green mb-4 md:mb-8 relative z-10">
-                    Inter<span className="italic text-stroke-green text-transparent" style={{ WebkitTextStroke: '2px #14532D' }}>EASY</span>
+                    Inter<span className="italic text-stroke-green text-transparent" style={{ WebkitTextStroke: '2px #14532D' }}>Easy</span>
                     <br />
                     <span className="text-electric-blue">{t.tagline}</span>
                 </h1>
